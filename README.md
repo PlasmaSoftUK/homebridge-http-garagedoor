@@ -1,6 +1,10 @@
 # homebridge-http-garagedoor
 A Homebridge Plugin to control a Garage Door / Gate via HTTP commands
 
+References:
+  https://blog.theodo.com/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/
+  https://gist.github.com/ptz0n/4dcaff1b2fbfbe03415d1cd1b63bc108
+
 A work in progress because I can't find an alternative plugin that will work
 
 I have a rPi Controlling my Gate via a web server which also allows me to integrate to Alexa.
