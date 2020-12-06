@@ -9,7 +9,9 @@ I would ideally like this integrated in to Homekit too, hence this plugin
 The aim is to have the plugin call the web service that Alexa use to control the gate:
 
 http://pigate.local/open
+
 http://pigate.local/close
+
 http://pigate.local/status
 
 Then push that back in to Homekit.
