@@ -11,7 +11,8 @@
     "door",
     "gate",
     "http",
-    "homebridge"
+    "homebridge",
+    "homebridge-plugin"
   ],
   "author": "PlasmaSoft",
   "license": "ISC",
