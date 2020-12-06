@@ -24,3 +24,10 @@ http://pigate.local/close
 http://pigate.local/status
 
 Then push that back in to Homekit.
+
+
+
+# Install
+
+sudo npm install -g https://github.com/PlasmaSoftUK/homebridge-http-garagedoor.git
+
