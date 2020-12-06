@@ -8,11 +8,23 @@
   },
   "keywords": [
     "garage",
-    "doo",
+    "door",
     "gate",
     "http",
     "homebridge"
   ],
   "author": "PlasmaSoft",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PlasmaSoftUK/homebridge-http-garagedoor.git"
+  },
+  "bugs": {
+    "url": "github.com/PlasmaSoftUK/homebridge-http-garagedoor/issues"
+  },
+  "homepage": "github.com/PlasmaSoftUK/homebridge-http-garagedoor",
+  "engines": {
+    "node": ">=0.14.0",
+    "homebridge": ">=1.0.0"
+  }
 }
