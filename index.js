@@ -54,20 +54,22 @@ HTTPGarageDoorAccessory.prototype = {
             res.on('end', () => {
                 // recv_data contains state info.... {"currentState":"Closed"}
                 let state = JSON.parse(recv_data).currentState;
-                this.log('Read status from Gate: ' + state);
-
+                let newState = DoorState.STOPPED;
                 if (state == "Open") {
-                  this.currentState = DoorState.OPEN;
+                  newState = DoorState.OPEN;
                 } else if (state == "Opening") {
-                  this.currentState = DoorState.OPENING;
+                  newState = DoorState.OPENING;
                 } else if (state == "Closed") {
-                  this.currentState = DoorState.CLOSED;
+                  newState = DoorState.CLOSED;
                 } else if (state == "Closing") {
-                  this.currentState = DoorState.CLOSING;
-                } else {
-                  this.currentState = DoorState.STOPPED;
+                  newState = DoorState.CLOSING;
                 }
-                this.currentDoorState.updateValue(this.currentState);
+                
+                if (this.currentState != newState){
+                    this.log('Status update from Gate: ' + state);
+                    this.currentState = newState;
+                    this.currentDoorState.updateValue(this.currentState);
+                }
                 setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
                 return state;
             });
@@ -115,17 +117,17 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.Model, "Generic HTTP Garage Door")
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
         
+        //Set all states to closed
         this.currentState = DoorState.CLOSED;
         this.targetState = DoorState.CLOSED; 
         this.currentStateString = "Closed";
-        
-        //Trigger Monitoring
-        this.currentStateString = this.monitorDoorState();
-  
         this.log("Setting Initial Door State: " + this.currentStateString);
 
         this.currentDoorState.updateValue(this.currentState);
         this.targetDoorState.updateValue(this.currentState);
+        
+        //Trigger Monitoring
+        this.currentStateString = this.monitorDoorState();
     },
     
     getTargetState: function(callback) {
