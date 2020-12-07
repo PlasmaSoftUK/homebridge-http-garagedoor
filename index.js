@@ -33,54 +33,64 @@ function HTTPGarageDoorAccessory(log, config) {
     this.activateURL = getVal(config, "activateURL", "http://pigate.local/activate");
     this.statusURL = getVal(config, "statusURL", "http://pigate.local/status");
 
-    this.service = new Service.GarageDoorOpener(this.name);
-    this.service.setCharacteristic(CurrentDoorState, CurrentDoorState.CLOSED);
-    this.service.setCharacteristic(TargetDoorState, TargetDoorState.CLOSED);
-
-    this.service
-      .getCharacteristic(CurrentDoorState)
-      .on("get", this._getCurrentDoorState.bind(this));
-    this.service
-      .getCharacteristic(TargetDoorState)
-      .on("get", this._getTargetDoorState.bind(this))
-      .on("set", this._setTargetDoorState.bind(this));
-    //this.service
-    //  .getCharacteristic(ObstructionDetected)
-    //  .on("get", this._getObstructionDetected.bind(this));
-
-    const { Manufacturer, Model, SerialNumber } = Characteristic;
-    this.informationService = new Service.AccessoryInformation();
-    this.informationService
-      .setCharacteristic(Manufacturer, "Generic")
-      .setCharacteristic(Model, "HTTP Door Opener")
-      .setCharacteristic(SerialNumber, "0000");
-  }
-
-  getServices() {
-    return [this.informationService, this.service];
-  }
-
-  _getCurrentDoorState(callback) {
-    this.log("Getting current door state...");
-    callback(null, this.service.getCharacteristic(CurrentDoorState).value);
-  }
-
-  _getTargetDoorState(callback) {
-    this.log("Getting target door state...");
-    callback(null, this.service.getCharacteristic(TargetDoorState).value);
-  }
-
-  _setTargetDoorState(value, callback) {
-    this.log(`Setting target door state to "${value}"...`);
-    this.service.getCharacteristic(TargetDoorState).updateValue(value);
-    this.service.getCharacteristic(CurrentDoorState).updateValue(value);
-    // .updateValue(CurrentDoorState.OPENING)
-    // .updateValue(CurrentDoorState.CLOSING)
-    callback(null, value);
-  }
-
-  //_getObstructionDetected(callback) {
-  //  this.log("Getting if obstruction is detected...");
-  //  callback(null, ObstructionDetected.NO);
-  //}
+    this.initService();
 }
+
+HTTPGarageDoorAccessory.prototype = {
+        
+          initService: function() {
+            this.garageDoorOpener = new Service.GarageDoorOpener(this.name,this.name);
+            this.currentDoorState = this.garageDoorOpener.getCharacteristic(DoorState);
+            this.currentDoorState.on('get', this.getState.bind(this));
+            this.targetDoorState = this.garageDoorOpener.getCharacteristic(Characteristic.TargetDoorState);
+            this.targetDoorState.on('set', this.setState.bind(this));
+            this.targetDoorState.on('get', this.getTargetState.bind(this));
+            
+            this.service = new Service.AccessoryInformation();
+            this.service
+              .setCharacteristic(Characteristic.Manufacturer, "PlasmaSoft")
+              .setCharacteristic(Characteristic.Model, "Generic HTTP Garage Door")
+              .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
+
+            //GET INITIAL DOOR STATE
+                  
+            this.log("Initial Door State: " + (isClosed ? "CLOSED" : "OPEN"));
+            this.currentDoorState.updateValue(isClosed ? DoorState.CLOSED : DoorState.OPEN);
+            this.targetDoorState.updateValue(isClosed ? DoorState.CLOSED : DoorState.OPEN);
+          },
+     
+        getTargetState: function(callback) {
+    callback(null, this.targetState);
+        },
+setState: function(state, callback) {
+    this.log("Setting state to " + state);
+    this.targetState = state;
+    var isClosed = this.isClosed();
+    if ((state == DoorState.OPEN && isClosed) || (state == DoorState.CLOSED && !isClosed)) {
+        this.log("Triggering GarageDoor Relay");
+        this.operating = true;
+        if (state == DoorState.OPEN) {
+            this.currentDoorState.updateValue(DoorState.OPENING);
+        } else {
+            this.currentDoorState.updateValue(DoorState.CLOSING);
+        }
+	     setTimeout(this.setFinalDoorState.bind(this), this.doorOpensInSeconds * 1000);
+	     this.switchOn();
+    }
+
+    callback();
+    return true;
+  },
+
+  getState: function(callback) {
+    var isClosed = this.isClosed();
+    var isOpen = this.isOpen();
+    var state = isClosed ? DoorState.CLOSED : isOpen ? DoorState.OPEN : DoorState.STOPPED;
+    this.log("GarageDoor is " + (isClosed ? "CLOSED ("+DoorState.CLOSED+")" : isOpen ? "OPEN ("+DoorState.OPEN+")" : "STOPPED (" + DoorState.STOPPED + ")")); 
+    callback(null, state);
+  },
+
+  getServices: function() {
+    return [this.service, this.garageDoorOpener];
+  }
+};
