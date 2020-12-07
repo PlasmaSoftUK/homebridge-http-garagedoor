@@ -142,7 +142,7 @@ HTTPGarageDoorAccessory.prototype = {
     
     setState: function(state, callback) {
         this.log("setState: " + state);
-        activateDoor();
+        self.activateDoor();
         this.targetState = state;
         this.targetDoorState.updateValue(this.targetState);
         
