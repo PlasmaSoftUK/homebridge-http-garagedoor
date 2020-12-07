@@ -54,7 +54,7 @@ HTTPGarageDoorAccessory.prototype = {
             res.on('end', () => {
                 // recv_data contains state info.... {"currentState":"Closed"}
                 let state = JSON.parse(recv_data).currentState;
-                //this.log('Read status from Gate: ' + state);
+                this.log('Read status from Gate: ' + state);
 
                 if (state == "Open") {
                   this.currentState = DoorState.OPEN;
@@ -117,7 +117,10 @@ HTTPGarageDoorAccessory.prototype = {
         
         this.currentState = DoorState.CLOSED;
         this.targetState = DoorState.CLOSED; 
-        this.currentStateString = "Closed"
+        this.currentStateString = "Closed";
+        
+        //Trigger Monitoring
+        this.currentStateString = this.monitorDoorState();
   
         this.log("Setting Initial Door State: " + this.currentStateString);
 
