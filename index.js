@@ -79,7 +79,7 @@ HTTPGarageDoorAccessory.prototype = {
             res.on('data', chunk => { recv_data += chunk});
             res.on('end', () => {
                 // recv_data contains volume info.
-                let state = JSON.parse(recv_data).currentStatus;
+                let state = JSON.parse(recv_data).currentState;
                 this.log('Read from Gate; status: ' + state);
                 return state;
             });
