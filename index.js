@@ -46,7 +46,7 @@ function HTTPGarageDoorAccessory(log, config) {
 HTTPGarageDoorAccessory.prototype = {
         
     monitorDoorState: function() {
-        
+            this.log("monitorDoorState");
             let req = http.get(this.statusURL, res => {
                 let recv_data = '';
                 res.on('data', chunk => { recv_data += chunk});
@@ -134,7 +134,7 @@ HTTPGarageDoorAccessory.prototype = {
     
     setState: function(state, callback) {
         this.log("setState to " + state);
-        
+        activateDoor();
         /*
         this.targetState = state;
         var isClosed = this.isClosed();
@@ -162,10 +162,10 @@ HTTPGarageDoorAccessory.prototype = {
         var state = isClosed ? DoorState.CLOSED : isOpen ? DoorState.OPEN : DoorState.STOPPED;
         this.log("GarageDoor is " + (isClosed ? "CLOSED ("+DoorState.CLOSED+")" : isOpen ? "OPEN ("+DoorState.OPEN+")" : "STOPPED (" + DoorState.STOPPED + ")"));
         */
-        var state = getDoorStatusFromURL();
+        var state = monitorDoorState();
         this.log("getState: " + state);
         
-        callback(null, state);
+        callback(null, this.targetState);
     },
     
     getServices: function() {
