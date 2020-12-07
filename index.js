@@ -35,6 +35,7 @@ function HTTPGarageDoorAccessory(log, config) {
     
     this.activateURL = config['activateURL'];
     this.statusURL = config['statusURL'];
+    this.sensorPollInMs = 4000;
     
     log("activateURL: " + this.activateURL);
     log("  statusURL: " + this.statusURL);
@@ -43,7 +44,43 @@ function HTTPGarageDoorAccessory(log, config) {
 }
 
 HTTPGarageDoorAccessory.prototype = {
-    
+        
+    monitorDoorState: function() {
+        
+            let req = http.get(this.statusURL, res => {
+            let recv_data = '';
+            res.on('data', chunk => { recv_data += chunk});
+            res.on('end', () => {
+                // recv_data contains state info.... {"currentState":"Closed"}
+                let state = JSON.parse(recv_data).currentState;
+                this.log('Read status from Gate: ' + state);
+
+                if (state == "Open") {
+                  this.targetState = DoorState.OPEN;
+                } else if (state == "Opening") {
+                  this.targetState = DoorState.OPENING;
+                } else if (state == "Closed") {
+                  this.targetState = DoorState.CLOSED;
+                } else if (state == "Closing") {
+                  this.targetState = DoorState.CLOSING;
+                } else {
+                  this.targetState = DoorState.STOPPED;
+                }
+                this.currentDoorState.updateValue(this.targetState);
+                setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
+                return state;
+            });
+        });
+        req.on('error', err => {
+            this.targetState = DoorState.STOPPED;
+            this.log("Error in monitorDoorState: "+ err.message);
+            
+            setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
+            return err.message;
+        })
+        
+    },
+   
     initService: function() {
         this.garageDoorOpener = new Service.GarageDoorOpener(this.name,this.name);
         
@@ -61,41 +98,11 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
         
         this.targetState = DoorState.CLOSED; 
-        this.targetStateString = this.getDoorStatusFromURL()
+        this.targetStateString = this.monitorDoorState();
 
         this.log("Initial Door State: " + this.targetState + " is " + this.targetStateString);
         this.currentDoorState.updateValue(this.targetState);
         this.targetDoorState.updateValue(this.targetState);
-    },
-    
-    
-    getDoorStatusFromURL: function () {
-            let req = http.get(this.statusURL, res => {
-            let recv_data = '';
-            res.on('data', chunk => { recv_data += chunk});
-            res.on('end', () => {
-                // recv_data contains state info.... {"currentState":"Closed"}
-                let state = JSON.parse(recv_data).currentState;
-                this.log('Read status from Gate: ' + state);
-
-                if (state == "Open") {
-                  this.targetState = DoorState.OPEN;
-                } else if (state == "Opening") {
-                  this.targetState = DoorState.OPENING;
-                } else if (state == "Closed") {
-                  this.targetState = DoorState.CLOSED;
-                } else if (state == "Closing") {
-                  this.targetState = DoorState.CLOSING;
-                } else
-                  this.targetState = DoorState.STOPPED;
-
-                return state;
-            });
-        });
-        req.on('error', err => {
-            this.log("Error in getPower: "+ err.message);
-            return err.message;
-        })
     },
     
     getTargetState: function(callback) {
@@ -136,8 +143,7 @@ HTTPGarageDoorAccessory.prototype = {
         var state = isClosed ? DoorState.CLOSED : isOpen ? DoorState.OPEN : DoorState.STOPPED;
         this.log("GarageDoor is " + (isClosed ? "CLOSED ("+DoorState.CLOSED+")" : isOpen ? "OPEN ("+DoorState.OPEN+")" : "STOPPED (" + DoorState.STOPPED + ")"));
         */
-        var state = DoorState.CLOSED;
-        
+        var state = getDoorStatusFromURL();
         this.log("getState: " + state);
         
         callback(null, state);
