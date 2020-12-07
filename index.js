@@ -103,6 +103,19 @@ HTTPGarageDoorAccessory.prototype = {
         
     },
    
+    doorStateToString: function(state) {
+        switch (state) {
+          case DoorState.OPEN:
+            return "OPEN";
+          case DoorState.CLOSED:
+            return "CLOSED";
+          case DoorState.STOPPED:
+            return "STOPPED";
+          default:
+            return "UNKNOWN";
+        }
+    },
+    
     initService: function() {
         this.garageDoorOpener = new Service.GarageDoorOpener(this.name,this.name);
         
@@ -135,46 +148,24 @@ HTTPGarageDoorAccessory.prototype = {
     getTargetState: function(callback) {
         
         //GET DOOR STATE
-        //var state = monitorDoorState();
-        this.log("getTargetState");
+        this.log("getTargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
         callback(null, this.targetState);
     },
     
     setState: function(state, callback) {
-        this.log("setState: " + state);
+        this.log("setState: " + state + " : " + this.doorStateToString(state));
         this.activateDoor();
         this.targetState = state;
         this.targetDoorState.updateValue(this.targetState);
         
-        /*
-        this.targetState = state;
-        var isClosed = this.isClosed();
-        if ((state == DoorState.OPEN && isClosed) || (state == DoorState.CLOSED && !isClosed)) {
-            this.log("Triggering GarageDoor Relay");
-            this.operating = true;
-            if (state == DoorState.OPEN) {
-                this.currentDoorState.updateValue(DoorState.OPENING);
-            } else {
-                this.currentDoorState.updateValue(DoorState.CLOSING);
-            }
-            setTimeout(this.setFinalDoorState.bind(this), this.doorOpensInSeconds * 1000);
-            this.switchOn();
-        }
-        */
         
         callback();
         return true;
     },
     
     getState: function(callback) {
-        /*
-        var isClosed = this.isClosed();
-        var isOpen = this.isOpen();
-        var state = isClosed ? DoorState.CLOSED : isOpen ? DoorState.OPEN : DoorState.STOPPED;
-        this.log("GarageDoor is " + (isClosed ? "CLOSED ("+DoorState.CLOSED+")" : isOpen ? "OPEN ("+DoorState.OPEN+")" : "STOPPED (" + DoorState.STOPPED + ")"));
-        */
 
-        this.log("getState: " + this.currentState);
+        this.log("getState: " + this.currentState + " : " + this.doorStateToString(this.currentState));
         
         callback(null, this.currentState);
     },
