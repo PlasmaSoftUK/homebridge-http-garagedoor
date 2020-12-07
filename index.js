@@ -1,42 +1,37 @@
-let Service = null;
-let Characteristic = null;
-let CurrentDoorState = null;
-
-const PLUGIN_NAME = "homebridge-http-garage-door";
-const ACCESSORY_NAME = "HTTPGarageDoor";
-
+/* jshint node: true */
+"use strict";
+var Service;
+var Characteristic;
+var DoorState;
+        
 module.exports = function(homebridge) {
-  Characteristic = homebridge.hap.Characteristic;
   Service = homebridge.hap.Service;
+  Characteristic = homebridge.hap.Characteristic;
+  DoorState = homebridge.hap.Characteristic.CurrentDoorState;
 
-  // Required Characteristics
-  CurrentDoorState = Characteristic.CurrentDoorState;
-  TargetDoorState = Characteristic.TargetDoorState;
-  //ObstructionDetected = Characteristic.ObstructionDetected;
-
-  homebridge.registerAccessory(
-    PLUGIN_NAME,
-    ACCESSORY_NAME,
-    GarageDoorAccessory
-  );
+  homebridge.registerAccessory("homebridge-http-garage-door", "HTTPGarageDoor", HTTPGarageDoorAccessory);
 };
 
-class GarageDoorAccessory {
-  constructor(log, config) {
+function getVal(config, key, defaultVal) {
+    var val = config[key];
+    if (val === null) {
+        this.log("WARN: ${key} is a mandatory parameter!");
+        return defaultVal;
+    }
+    return val;
+}
+
+
+function HTTPGarageDoorAccessory(log, config) {
+  
     this.log = log;
+    this.version = require('./package.json').version;
+    log("HTTPGarageDoorAccessory version " + this.version);
+  
     this.name = config.name;
     
-    if (this.config.activateURL)
-        this.activateURL = this.config.activateURL;
-    else
-        this.log("WARN: activateURL is a mandatory parameter!");
-        this.activateURL = "http://pigate.local/activate"
-
-    if (this.config.statusURL)
-        this.statusURL = this.config.statusURL;
-    else
-        this.log("WARN: statusURL is a mandatory parameter!");
-        this.statusURL = "http://pigate.local/status"
+    this.activateURL = getVal(config, "activateURL", "http://pigate.local/activate");
+    this.statusURL = getVal(config, "statusURL", "http://pigate.local/status");
 
     this.service = new Service.GarageDoorOpener(this.name);
     this.service.setCharacteristic(CurrentDoorState, CurrentDoorState.CLOSED);
