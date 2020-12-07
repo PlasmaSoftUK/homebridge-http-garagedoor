@@ -25,6 +25,16 @@ class GarageDoorAccessory {
   constructor(log, config) {
     this.log = log;
     this.name = config.name;
+    
+    if (this.config.activateURL)
+        this.activateURL = this.config.activateURL;
+    else
+        this.log("WARN: activateURL is a mandatory parameter!");
+
+    if (this.config.statusURL)
+        this.statusURL = this.config.statusURL;
+    else
+        this.log("WARN: statusURL is a mandatory parameter!");
 
     this.service = new Service.GarageDoorOpener(this.name);
     this.service.setCharacteristic(CurrentDoorState, CurrentDoorState.CLOSED);
@@ -37,9 +47,9 @@ class GarageDoorAccessory {
       .getCharacteristic(TargetDoorState)
       .on("get", this._getTargetDoorState.bind(this))
       .on("set", this._setTargetDoorState.bind(this));
-    this.service
-      .getCharacteristic(ObstructionDetected)
-      .on("get", this._getObstructionDetected.bind(this));
+    #this.service
+    #  .getCharacteristic(ObstructionDetected)
+    #  .on("get", this._getObstructionDetected.bind(this));
 
     const { Manufacturer, Model, SerialNumber } = Characteristic;
     this.informationService = new Service.AccessoryInformation();
