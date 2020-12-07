@@ -173,8 +173,8 @@ HTTPGarageDoorAccessory.prototype = {
         var state = isClosed ? DoorState.CLOSED : isOpen ? DoorState.OPEN : DoorState.STOPPED;
         this.log("GarageDoor is " + (isClosed ? "CLOSED ("+DoorState.CLOSED+")" : isOpen ? "OPEN ("+DoorState.OPEN+")" : "STOPPED (" + DoorState.STOPPED + ")"));
         */
-        var state = this.monitorDoorState();
-        this.log("getState: " + state);
+
+        this.log("getState: " + this.currentState);
         
         callback(null, this.currentState);
     },
