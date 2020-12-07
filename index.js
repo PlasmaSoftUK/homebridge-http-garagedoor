@@ -107,8 +107,12 @@ HTTPGarageDoorAccessory.prototype = {
         switch (state) {
           case DoorState.OPEN:
             return "OPEN";
+          case DoorState.OPENING:
+            return "OPENING";     
           case DoorState.CLOSED:
             return "CLOSED";
+          case DoorState.CLOSING:
+            return "CLOSING";
           case DoorState.STOPPED:
             return "STOPPED";
           default:
