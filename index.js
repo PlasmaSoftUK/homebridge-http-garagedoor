@@ -49,10 +49,13 @@ HTTPGarageDoorAccessory.prototype = {
     monitorDoorState: function() {
     
         this.log("monitorDoorState");
+        
         let req = http.get(this.statusURL, res => {
+            this.log("monitorDoorState1");
             let recv_data = '';
             res.on('data', chunk => { recv_data += chunk});
             res.on('end', () => {
+                this.log("monitorDoorState2");
                 // recv_data contains state info.... {"currentState":"Closed"}
                 let state = JSON.parse(recv_data).currentState;
                 this.log('Read status from Gate: ' + state);
@@ -68,10 +71,12 @@ HTTPGarageDoorAccessory.prototype = {
                 } else {
                   this.targetState = DoorState.STOPPED;
                 }
+                this.log("monitorDoorState3");
                 this.currentDoorState.updateValue(this.targetState);
                 setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
                 return state;
             });
+            this.log("monitorDoorState4");
         });
         req.on('error', err => {
             this.targetState = DoorState.STOPPED;
@@ -80,7 +85,7 @@ HTTPGarageDoorAccessory.prototype = {
             setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
             return err.message;
         })
-
+        this.log("monitorDoorState5");
     },
     
     activateDoor: function() {
