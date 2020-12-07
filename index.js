@@ -41,7 +41,7 @@ function HTTPGarageDoorAccessory(log, config) {
     this.statusURL = config['statusURL'];
     
     log("statusURL: " + this.statusURL);
-    log("Door State: " + getDoorStatusFromURL());
+    log("Door State: " + thisa.getDoorStatusFromURL());
     
     this.initService();
 }
