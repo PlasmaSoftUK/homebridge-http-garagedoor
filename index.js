@@ -43,7 +43,10 @@ function HTTPGarageDoorAccessory(log, config) {
     this.initService();
 }
 
-function monitorDoorState() {
+
+HTTPGarageDoorAccessory.prototype = {
+        
+    monitorDoorState: function() {
     
         this.log("monitorDoorState");
         let req = http.get(this.statusURL, res => {
@@ -78,11 +81,7 @@ function monitorDoorState() {
             return err.message;
         })
 
-}
-
-HTTPGarageDoorAccessory.prototype = {
-        
-
+    },
     
     activateDoor: function() {
       
@@ -119,7 +118,7 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
         
         this.targetState = DoorState.CLOSED; 
-        this.targetStateString = monitorDoorState();
+        this.targetStateString = this.monitorDoorState();
    
         this.log("Initial Door State: " + this.targetState + " is " + this.targetStateString);
 
