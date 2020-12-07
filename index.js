@@ -3,7 +3,7 @@ let Characteristic = null;
 let CurrentDoorState = null;
 
 const PLUGIN_NAME = "homebridge-http-garage-door";
-const ACCESSORY_NAME = "http-garage-door";
+const ACCESSORY_NAME = "HTTPGarageDoor";
 
 module.exports = function(homebridge) {
   Characteristic = homebridge.hap.Characteristic;
