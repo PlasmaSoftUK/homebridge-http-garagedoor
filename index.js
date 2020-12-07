@@ -4,8 +4,6 @@ var Service;
 var Characteristic;
 var DoorState;
 
-//const request = require('request');
-//const url = require('url');
 const http = require('http');
 
 module.exports = function(homebridge) {
@@ -35,14 +33,11 @@ function HTTPGarageDoorAccessory(log, config) {
     
     this.name = config.name;
     
-    //this.activateURL = getVal(config, "activateURL", "http://pigate.local/activate");
-    //this.statusURL = getVal(config, "statusURL", "http://pigate.local/status");
-    
     this.activateURL = config['activateURL'];
     this.statusURL = config['statusURL'];
     
-    log("statusURL: " + this.statusURL);
-    log("Door State: " + this.getDoorStatusFromURL());
+    log("activateURL: " + this.activateURL);
+    log("  statusURL: " + this.statusURL);
     
     this.initService();
 }
@@ -65,7 +60,8 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.Model, "Generic HTTP Garage Door")
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
         
-        this.targetState = DoorState.CLOSED; //getDoorStatusFromURL()
+        this.targetState = DoorState.CLOSED; 
+        this.targetStateString = getDoorStatusFromURL()
         let isClosed = true;
         this.log("Initial Door State: " + (isClosed ? "CLOSED" : "OPEN"));
         this.currentDoorState.updateValue(isClosed ? DoorState.CLOSED : DoorState.OPEN);
@@ -74,13 +70,25 @@ HTTPGarageDoorAccessory.prototype = {
     
     
     getDoorStatusFromURL: function () {
-            let req = http.get('http://localhost:4283/status', res => {
+            let req = http.get(this.statusURL, res => {
             let recv_data = '';
             res.on('data', chunk => { recv_data += chunk});
             res.on('end', () => {
-                // recv_data contains volume info.
+                // recv_data contains state info.... {"currentState":"Closed"}
                 let state = JSON.parse(recv_data).currentState;
-                this.log('Read from Gate; status: ' + state);
+                this.log('Read status from Gate: ' + state);
+                
+                  if state == "Open" {
+                      this.targetState = DoorState.OPEN
+                  } else if state == "Opening" {
+                      this.targetState = DoorState.OPENING
+                  } else if state == "Closed" {
+                      this.targetState = DoorState.CLOSED
+                  } else if state == "Closing" {
+                      this.targetState = DoorState.CLOSING
+                  } else
+                      this.targetState = DoorState.STOPPED
+                
                 return state;
             });
         });
@@ -90,45 +98,11 @@ HTTPGarageDoorAccessory.prototype = {
         })
     },
     
-    /*
-    getDoorStatusFromURL: function () {
-      const me = this;
-      request({
-        url: me.statusURL,
-        method: 'GET',
-      },
-      function (error, response, body) {
-        if (error) {
-          me.log('STATUS: ' + response.statusCode);
-          me.log(error.message);
-          return error;
-        }
-        
-          if body.currentState == "Open" {
-              this.targetState = DoorState.OPEN
-          } else if body.currentState == "Opening" {
-              this.targetState = DoorState.OPENING
-          } else if body.currentState == "Closed" {
-              this.targetState = DoorState.CLOSED
-          } else if body.currentState == "Closing" {
-              this.targetState = DoorState.CLOSING
-          } else
-              this.targetState = DoorState.STOPPED
-          
-        return this.targetState;
-      });
-    },
-    */
-    
     getTargetState: function(callback) {
         
         //GET DOOR STATE
-        //this.targetState = getDoorStatusFromURL()
-        var state = DoorState.CLOSED;
-        
-        this.log("getTargetState: " + state);
-        
-        
+        var state = getDoorStatusFromURL();
+        this.log("getTargetState: " + state;
         callback(null, this.targetState);
     },
     
