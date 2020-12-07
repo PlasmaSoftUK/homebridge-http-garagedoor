@@ -78,13 +78,13 @@ HTTPGarageDoorAccessory.prototype = {
                 let state = JSON.parse(recv_data).currentState;
                 this.log('Read status from Gate: ' + state);
 
-                if state == "Open" {
+                if (state == "Open") {
                   this.targetState = DoorState.OPEN;
-                } else if state == "Opening" {
+                } else if (state == "Opening") {
                   this.targetState = DoorState.OPENING;
-                } else if state == "Closed" {
+                } else if (state == "Closed") {
                   this.targetState = DoorState.CLOSED;
-                } else if state == "Closing" {
+                } else if (state == "Closing") {
                   this.targetState = DoorState.CLOSING;
                 } else
                   this.targetState = DoorState.STOPPED;
