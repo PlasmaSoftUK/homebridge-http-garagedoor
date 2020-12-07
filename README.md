@@ -31,10 +31,10 @@ Then push that back in to Homekit.
 
 sudo npm install -g https://github.com/PlasmaSoftUK/homebridge-http-garagedoor.git
 
-...
+```
 {
-  "accessory": "MyHTTPGarageDoor",
+  "accessory": "HTTPGarageDoor",
   "statusUrl": "http://192.168.0.10/status",
   "openUrl": "http://192.168.0.10/open"
 }
-...
+```
