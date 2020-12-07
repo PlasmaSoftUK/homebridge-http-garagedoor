@@ -17,9 +17,7 @@ I would ideally like this integrated in to Homekit too, hence this plugin
 
 The aim is to have the plugin call the web service that Alexa use to control the gate:
 
-http://pigate.local/open
-
-http://pigate.local/close
+http://pigate.local/activate
 
 http://pigate.local/status
 
@@ -34,7 +32,7 @@ sudo npm install -g https://github.com/PlasmaSoftUK/homebridge-http-garagedoor.g
 ```
 {
   "accessory": "HTTPGarageDoor",
-  "statusUrl": "http://192.168.0.10/status",
-  "openUrl": "http://192.168.0.10/open"
+  "statusURL": "http://pigate.local/status",
+  "activateURL": "http://pigate.local/activate"
 }
 ```
