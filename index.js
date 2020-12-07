@@ -4,8 +4,8 @@ var Service;
 var Characteristic;
 var DoorState;
 
-const request = require('request');
-const url = require('url');
+//const request = require('request');
+//const url = require('url');
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
