@@ -116,10 +116,10 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
         
         this.targetState = DoorState.CLOSED; 
-        this.targetStateString = this.monitorDoorState();
-        this.targetStateString = this.monitorDoorState();
-        
+        this.targetStateString = monitorDoorState();
+   
         this.log("Initial Door State: " + this.targetState + " is " + this.targetStateString);
+
         this.currentDoorState.updateValue(this.targetState);
         this.targetDoorState.updateValue(this.targetState);
     },
