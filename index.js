@@ -49,9 +49,9 @@ class GarageDoorAccessory {
       .getCharacteristic(TargetDoorState)
       .on("get", this._getTargetDoorState.bind(this))
       .on("set", this._setTargetDoorState.bind(this));
-    #this.service
-    #  .getCharacteristic(ObstructionDetected)
-    #  .on("get", this._getObstructionDetected.bind(this));
+    //this.service
+    //  .getCharacteristic(ObstructionDetected)
+    //  .on("get", this._getObstructionDetected.bind(this));
 
     const { Manufacturer, Model, SerialNumber } = Characteristic;
     this.informationService = new Service.AccessoryInformation();
