@@ -5,6 +5,8 @@ References:
 
   https://blog.theodo.com/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/
   
+  https://github.com/LukeSkywalker92/homebridge-gpio-garagedoor
+  
   https://github.com/senscho/homebridge-tutorial
 
   https://gist.github.com/ptz0n/4dcaff1b2fbfbe03415d1cd1b63bc108
