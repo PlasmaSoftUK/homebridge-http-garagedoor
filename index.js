@@ -6,6 +6,7 @@ var DoorState;
 
 //const request = require('request');
 //const url = require('url');
+const http = require('http');
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
