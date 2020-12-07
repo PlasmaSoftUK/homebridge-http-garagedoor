@@ -35,10 +35,12 @@ function HTTPGarageDoorAccessory(log, config) {
     
     this.activateURL = config['activateURL'];
     this.statusURL = config['statusURL'];
-    this.sensorPollInMs = 4000;
+    this.statusPollInMs = config['statusPollInMs'];
     
-    log("activateURL: " + this.activateURL);
-    log("  statusURL: " + this.statusURL);
+    log("          name: " + this.name);
+    log("   activateURL: " + this.activateURL);
+    log("     statusURL: " + this.statusURL);
+    log("statusPollInMs: " + this.statusPollInMs);
     
     this.initService();
 }
@@ -70,7 +72,7 @@ HTTPGarageDoorAccessory.prototype = {
                     this.currentState = newState;
                     this.currentDoorState.updateValue(this.currentState);
                 }
-                setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
+                setTimeout(this.monitorDoorState.bind(this), this.statusPollInMs);
                 return state;
             });
         });
@@ -78,7 +80,7 @@ HTTPGarageDoorAccessory.prototype = {
             this.currentState = DoorState.STOPPED;
             this.log("Error in monitorDoorState: "+ err.message);
 
-            setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
+            setTimeout(this.monitorDoorState.bind(this), this.statusPollInMs);
             return err.message;
         })
     },
