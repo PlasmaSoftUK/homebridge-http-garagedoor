@@ -31,8 +31,9 @@ sudo npm install -g https://github.com/PlasmaSoftUK/homebridge-http-garagedoor.g
 
 ```
 {
-  "accessory": "HTTPGarageDoor",
-  "statusURL": "http://pigate.local/status",
-  "activateURL": "http://pigate.local/activate"
+    "accessory": "HTTPGarageDoor",
+    "name": "Front Gate",
+    "statusURL": "http://pigate.local/status",
+    "activateURL": "http://pigate.local/activate"
 }
 ```
