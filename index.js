@@ -70,6 +70,24 @@ HTTPGarageDoorAccessory.prototype = {
         this.targetDoorState.updateValue(isClosed ? DoorState.CLOSED : DoorState.OPEN);
     },
     
+    
+    getDoorStatusFromURL: function () {
+            let req = http.get('http://localhost:4283/status', res => {
+            let recv_data = '';
+            res.on('data', chunk => { recv_data += chunk});
+            res.on('end', () => {
+                // recv_data contains volume info.
+                let state = JSON.parse(recv_data).currentStatus;
+                this.log('Read from Gate; status: ' + state);
+                return state;
+            });
+        });
+        req.on('error', err => {
+            this.log("Error in getPower: "+ err.message);
+            return err.message;
+        })
+    },
+    
     /*
     getDoorStatusFromURL: function () {
       const me = this;
@@ -99,6 +117,7 @@ HTTPGarageDoorAccessory.prototype = {
       });
     },
     */
+    
     getTargetState: function(callback) {
         
         //GET DOOR STATE
