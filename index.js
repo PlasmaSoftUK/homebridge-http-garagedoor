@@ -30,11 +30,13 @@ class GarageDoorAccessory {
         this.activateURL = this.config.activateURL;
     else
         this.log("WARN: activateURL is a mandatory parameter!");
+        this.activateURL = "http://pigate.local/activate"
 
     if (this.config.statusURL)
         this.statusURL = this.config.statusURL;
     else
         this.log("WARN: statusURL is a mandatory parameter!");
+        this.statusURL = "http://pigate.local/status"
 
     this.service = new Service.GarageDoorOpener(this.name);
     this.service.setCharacteristic(CurrentDoorState, CurrentDoorState.CLOSED);
