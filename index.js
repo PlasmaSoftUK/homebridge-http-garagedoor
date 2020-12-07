@@ -49,41 +49,36 @@ HTTPGarageDoorAccessory.prototype = {
     monitorDoorState: function() {
   
         let req = http.get(this.statusURL, res => {
-            this.log("monitorDoorState1");
             let recv_data = '';
             res.on('data', chunk => { recv_data += chunk});
             res.on('end', () => {
-                this.log("monitorDoorState2");
                 // recv_data contains state info.... {"currentState":"Closed"}
                 let state = JSON.parse(recv_data).currentState;
-                this.log('Read status from Gate: ' + state);
+                //this.log('Read status from Gate: ' + state);
 
                 if (state == "Open") {
-                  this.targetState = DoorState.OPEN;
+                  this.currentState = DoorState.OPEN;
                 } else if (state == "Opening") {
-                  this.targetState = DoorState.OPENING;
+                  this.currentState = DoorState.OPENING;
                 } else if (state == "Closed") {
-                  this.targetState = DoorState.CLOSED;
+                  this.currentState = DoorState.CLOSED;
                 } else if (state == "Closing") {
-                  this.targetState = DoorState.CLOSING;
+                  this.currentState = DoorState.CLOSING;
                 } else {
-                  this.targetState = DoorState.STOPPED;
+                  this.currentState = DoorState.STOPPED;
                 }
-                this.log("monitorDoorState3");
-                this.currentDoorState.updateValue(this.targetState);
+                this.currentDoorState.updateValue(this.currentState);
                 setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
                 return state;
             });
-            this.log("monitorDoorState4");
         });
         req.on('error', err => {
-            this.targetState = DoorState.STOPPED;
+            this.currentState = DoorState.STOPPED;
             this.log("Error in monitorDoorState: "+ err.message);
 
             setTimeout(this.monitorDoorState.bind(this), this.sensorPollInMs);
             return err.message;
         })
-        this.log("monitorDoorState5");
     },
     
     activateDoor: function() {
@@ -120,20 +115,20 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.Model, "Generic HTTP Garage Door")
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
         
+        this.currentState = DoorState.CLOSED;
         this.targetState = DoorState.CLOSED; 
-        this.targetStateString = this.monitorDoorState();
-        this.sleep(2);
-   
-        this.log("Initial Door State: " + this.targetState + " is " + this.targetStateString);
+        this.currentStateString = "Closed"
+  
+        this.log("Setting Initial Door State: " + this.currentStateString);
 
-        this.currentDoorState.updateValue(this.targetState);
-        this.targetDoorState.updateValue(this.targetState);
+        this.currentDoorState.updateValue(this.currentState);
+        this.targetDoorState.updateValue(this.currentState);
     },
     
     getTargetState: function(callback) {
         
         //GET DOOR STATE
-        var state = monitorDoorState();
+        //var state = monitorDoorState();
         this.log("getTargetState: " + state);
         callback(null, this.targetState);
     },
@@ -141,6 +136,9 @@ HTTPGarageDoorAccessory.prototype = {
     setState: function(state, callback) {
         this.log("setState to " + state);
         activateDoor();
+        this.targetState = state;
+        this.targetDoorState.updateValue(this.targetState);
+        
         /*
         this.targetState = state;
         var isClosed = this.isClosed();
@@ -171,15 +169,10 @@ HTTPGarageDoorAccessory.prototype = {
         var state = monitorDoorState();
         this.log("getState: " + state);
         
-        callback(null, this.targetState);
+        callback(null, this.currentState);
     },
     
     getServices: function() {
         return [this.service, this.garageDoorOpener];
-    },
-    
-    sleep: function(seconds) {
-      var e = new Date().getTime() + (seconds * 1000);
-      while (new Date().getTime() <= e) {}
     }
 };
