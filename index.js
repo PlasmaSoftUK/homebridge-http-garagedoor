@@ -37,8 +37,8 @@ function HTTPGarageDoorAccessory(log, config) {
     //this.activateURL = getVal(config, "activateURL", "http://pigate.local/activate");
     //this.statusURL = getVal(config, "statusURL", "http://pigate.local/status");
     
-    this.activateURL = url.parse(config['activateURL']);
-    this.statusURL = url.parse(config['statusURL']);
+    this.activateURL = config['activateURL'];
+    this.statusURL = config['statusURL'];
     
     
     
