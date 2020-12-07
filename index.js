@@ -102,7 +102,7 @@ HTTPGarageDoorAccessory.prototype = {
         
         //GET DOOR STATE
         var state = getDoorStatusFromURL();
-        this.log("getTargetState: " + state;
+        this.log("getTargetState: " + state);
         callback(null, this.targetState);
     },
     
