@@ -62,10 +62,10 @@ HTTPGarageDoorAccessory.prototype = {
         
         this.targetState = DoorState.CLOSED; 
         this.targetStateString = this.getDoorStatusFromURL()
-        let isClosed = true;
-        this.log("Initial Door State: " + this.targetState + " is " + (isClosed ? "CLOSED" : "OPEN"));
-        this.currentDoorState.updateValue(isClosed ? DoorState.CLOSED : DoorState.OPEN);
-        this.targetDoorState.updateValue(isClosed ? DoorState.CLOSED : DoorState.OPEN);
+
+        this.log("Initial Door State: " + this.targetState + " is " + this.targetStateString);
+        this.currentDoorState.updateValue(this.targetState);
+        this.targetDoorState.updateValue(this.targetState);
     },
     
     
