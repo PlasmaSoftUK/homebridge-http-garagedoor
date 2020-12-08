@@ -73,7 +73,11 @@ HTTPGarageDoorAccessory.prototype = {
                     this.currentDoorState.updateValue(this.currentState);
                     
                     //Check if Door is changing state from external activation if so update target state
-                    if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
+                    if(this.initialising && newState == DoorState.OPEN){
+                        //We have initialised and the door is already open update target state
+                        this.targetState == DoorState.OPEN;
+                        this.targetDoorState.updateValue(this.targetState);
+                    } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
                         this.log('Door Was Open but now Closing');
                         this.targetState == DoorState.CLOSED;
                         this.targetDoorState.updateValue(this.targetState); 
@@ -146,6 +150,10 @@ HTTPGarageDoorAccessory.prototype = {
         .setCharacteristic(Characteristic.Manufacturer, "PlasmaSoft")
         .setCharacteristic(Characteristic.Model, "Generic HTTP Garage Door")
         .setCharacteristic(Characteristic.SerialNumber, "Version 1.0.0");
+        
+        //For an unknown reason the very first status lookup fails
+        //Setting an init variable so we know we have just started and can set the states correctly
+        this.initialising = true;
         
         //Set all states to closed
         this.currentState = DoorState.CLOSED;
