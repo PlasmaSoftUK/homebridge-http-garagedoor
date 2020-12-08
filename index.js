@@ -65,16 +65,16 @@ HTTPGarageDoorAccessory.prototype = {
                     if(this.initialising && newState == DoorState.OPEN){
                         //We have initialised and the door is already open update target state
                         this.log('Initial Status is now Open');
-                        this.targetState == DoorState.OPEN;
+                        this.targetState = DoorState.OPEN;
                         this.log("Initial TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
                         this.targetDoorState.updateValue(this.targetState);                   
                     } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
                         this.log('Door Was Open but now Closing');
-                        this.targetState == DoorState.CLOSED;
+                        this.targetState = DoorState.CLOSED;
                         this.targetDoorState.updateValue(this.targetState); 
                     } else if(this.targetState == DoorState.CLOSED && newState == DoorState.OPENING) {
                         this.log('Door Was Open but now Closing');
-                        this.targetState == DoorState.OPEN;
+                        this.targetState = DoorState.OPEN;
                         this.targetDoorState.updateValue(this.targetState); 
                     }
                     this.log("TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
@@ -159,10 +159,6 @@ HTTPGarageDoorAccessory.prototype = {
 
         this.currentDoorState.updateValue(this.currentState);
         this.targetDoorState.updateValue(this.targetState);
-        
-        
-        this.log("is this Closing: " + DoorState.CLOSING + " - " + this.doorStateToString(DoorState.CLOSING));
-        this.log("is this Opening: " + DoorState.OPENING + " - " + this.doorStateToString(DoorState.OPENING));
         
         //Trigger Monitoring
         this.currentStateString = this.monitorDoorState();
