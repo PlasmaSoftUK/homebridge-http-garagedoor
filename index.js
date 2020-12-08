@@ -75,6 +75,7 @@ HTTPGarageDoorAccessory.prototype = {
                     //Check if Door is changing state from external activation if so update target state
                     if(this.initialising && newState == DoorState.OPEN){
                         //We have initialised and the door is already open update target state
+                        this.initialising = false;
                         this.targetState == DoorState.OPEN;
                         this.targetDoorState.updateValue(this.targetState);
                     } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
