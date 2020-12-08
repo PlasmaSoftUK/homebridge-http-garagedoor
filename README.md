@@ -34,7 +34,7 @@ Then in your config.json add this accessory:
     "accessory": "HTTPGarageDoor",
     "name": "Front Gate",
     "activateURL": "http://127.0.0.1:4283/activate",
-    "statusURL": "http://127.0.0.1:4283/activate",
+    "statusURL": "http://127.0.0.1:4283/status",
     "statusPollInMs": 4000
 }
 ```
