@@ -76,8 +76,8 @@ HTTPGarageDoorAccessory.prototype = {
                     if(this.initialising && newState == DoorState.OPEN){
                         //We have initialised and the door is already open update target state
                         this.log('Initial Status is now Open');
-                        this.initialising = false;
                         this.targetState == DoorState.OPEN;
+                        this.log("Initial TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
                         this.targetDoorState.updateValue(this.targetState);                   
                     } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
                         this.log('Door Was Open but now Closing');
@@ -90,6 +90,9 @@ HTTPGarageDoorAccessory.prototype = {
                     }
                     this.log("TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
                 }
+                
+                //Clear initialising flag first time this runs
+                this.initialising = false;
                 
                 setTimeout(this.monitorDoorState.bind(this), this.statusPollInMs);
                 return state;
