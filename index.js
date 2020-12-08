@@ -57,27 +57,25 @@ HTTPGarageDoorAccessory.prototype = {
                 }
                 
                 if (this.currentState != newState){
-                    this.log('Status update from Gate: ' + state);
+                    this.log('Status update from ' + this.name + ': ' + state);
                     this.currentState = newState;
                     this.currentDoorState.updateValue(this.currentState);
                     
                     //Check if Door is changing state from external activation if so update target state
                     if(this.initialising && newState == DoorState.OPEN){
                         //We have initialised and the door is already open update target state
-                        this.log('Initial Status is now Open');
+                        this.log('Initial Status for ' + this.name + ' is now Open');
                         this.targetState = DoorState.OPEN;
-                        this.log("Initial TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
                         this.targetDoorState.updateValue(this.targetState);                   
                     } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
-                        this.log('Door Was Open but now Closing');
+                        this.log(this.name + ' was Open but now Closing');
                         this.targetState = DoorState.CLOSED;
                         this.targetDoorState.updateValue(this.targetState); 
                     } else if(this.targetState == DoorState.CLOSED && newState == DoorState.OPENING) {
-                        this.log('Door Was Open but now Closing');
+                        this.log(this.name + ' was Open but now Closing');
                         this.targetState = DoorState.OPEN;
                         this.targetDoorState.updateValue(this.targetState); 
                     }
-                    this.log("TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
                 }
                 
                 //Clear initialising flag first time this runs
@@ -104,7 +102,7 @@ HTTPGarageDoorAccessory.prototype = {
             res.on('end', () => {
                 // recv_data contains state info.... {"result":"Success"}
                 let result = JSON.parse(recv_data).result;
-                this.log('Activate Gate Request: ' + result);
+                this.log('Activate ' + this.name + ' request: ' + result);
 
             });
         });
@@ -155,7 +153,7 @@ HTTPGarageDoorAccessory.prototype = {
         this.currentState = DoorState.CLOSED;
         this.targetState = DoorState.CLOSED; 
         this.currentStateString = "Closed";
-        this.log(" Initial State: " + this.currentStateString);
+        this.log(" Initial State: Closed");
 
         this.currentDoorState.updateValue(this.currentState);
         this.targetDoorState.updateValue(this.targetState);
@@ -167,12 +165,12 @@ HTTPGarageDoorAccessory.prototype = {
     getTargetState: function(callback) {
         
         //GET DOOR STATE
-        this.log("getTargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
+        this.log(this.name + " getTargetState: " + this.doorStateToString(this.targetState));
         callback(null, this.targetState);
     },
     
     setTargetState: function(state, callback) {
-        this.log("setTargetState: " + state + " : " + this.doorStateToString(state));
+        this.log(this.name + " setTargetState: " + this.doorStateToString(state));
         this.activateDoor();
         this.targetState = state;
         this.targetDoorState.updateValue(this.targetState);
@@ -184,7 +182,7 @@ HTTPGarageDoorAccessory.prototype = {
     
     getState: function(callback) {
 
-        this.log("getState: " + this.currentState + " : " + this.doorStateToString(this.currentState));
+        this.log(this.name + " getState: " + this.doorStateToString(this.currentState));
         
         callback(null, this.currentState);
     },
