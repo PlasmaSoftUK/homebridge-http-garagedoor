@@ -169,7 +169,10 @@ HTTPGarageDoorAccessory.prototype = {
         this.log(" Initial State: " + this.currentStateString);
 
         this.currentDoorState.updateValue(this.currentState);
-        this.targetDoorState.updateValue(this.currentState);
+        this.targetDoorState.updateValue(this.targetState);
+        
+        
+        this.log("is this Closing: " + DoorState.CLOSING + " - " + this.doorStateToString(DoorState.CLOSING));
         
         //Trigger Monitoring
         this.currentStateString = this.monitorDoorState();
