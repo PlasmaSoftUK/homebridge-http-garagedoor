@@ -64,7 +64,7 @@ HTTPGarageDoorAccessory.prototype = {
                     //Check if Door is changing state from external activation if so update target state
                     if(this.initialising && newState == DoorState.OPEN){
                         //We have initialised and the door is already open update target state
-                        this.log('Initial Status for ' + this.name + ' is now Open');
+                        this.log(this.name + 'Initial Status is now Open');
                         this.targetState = DoorState.OPEN;
                         this.targetDoorState.updateValue(this.targetState);                   
                     } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
@@ -72,7 +72,7 @@ HTTPGarageDoorAccessory.prototype = {
                         this.targetState = DoorState.CLOSED;
                         this.targetDoorState.updateValue(this.targetState); 
                     } else if(this.targetState == DoorState.CLOSED && newState == DoorState.OPENING) {
-                        this.log(this.name + ' was Open but now Closing');
+                        this.log(this.name + ' was Closed but now Opening');
                         this.targetState = DoorState.OPEN;
                         this.targetDoorState.updateValue(this.targetState); 
                     }
@@ -165,12 +165,12 @@ HTTPGarageDoorAccessory.prototype = {
     getTargetState: function(callback) {
         
         //GET DOOR STATE
-        this.log(this.name + " getTargetState: " + this.doorStateToString(this.targetState));
+        //this.log(this.name + " getTargetState: " + this.doorStateToString(this.targetState));
         callback(null, this.targetState);
     },
     
     setTargetState: function(state, callback) {
-        this.log(this.name + " setTargetState: " + this.doorStateToString(state));
+        //this.log(this.name + " setTargetState: " + this.doorStateToString(state));
         this.activateDoor();
         this.targetState = state;
         this.targetDoorState.updateValue(this.targetState);
@@ -182,7 +182,7 @@ HTTPGarageDoorAccessory.prototype = {
     
     getState: function(callback) {
 
-        this.log(this.name + " getState: " + this.doorStateToString(this.currentState));
+        //this.log(this.name + " getState: " + this.doorStateToString(this.currentState));
         
         callback(null, this.currentState);
     },
