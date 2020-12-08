@@ -78,7 +78,7 @@ HTTPGarageDoorAccessory.prototype = {
                         this.log('Initial Status is now Open');
                         this.initialising = false;
                         this.targetState == DoorState.OPEN;
-                        this.targetDoorState.updateValue(this.targetState);
+                        this.targetDoorState.updateValue(this.targetState);                   
                     } else if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
                         this.log('Door Was Open but now Closing');
                         this.targetState == DoorState.CLOSED;
@@ -88,7 +88,9 @@ HTTPGarageDoorAccessory.prototype = {
                         this.targetState == DoorState.OPEN;
                         this.targetDoorState.updateValue(this.targetState); 
                     }
+                    this.log("TargetState: " + this.targetState + " : " + this.doorStateToString(this.targetState));
                 }
+                
                 setTimeout(this.monitorDoorState.bind(this), this.statusPollInMs);
                 return state;
             });
@@ -144,7 +146,7 @@ HTTPGarageDoorAccessory.prototype = {
         this.currentDoorState.on('get', this.getState.bind(this));
         
         this.targetDoorState = this.garageDoorOpener.getCharacteristic(Characteristic.TargetDoorState);
-        this.targetDoorState.on('set', this.setState.bind(this));
+        this.targetDoorState.on('set', this.setTargetState.bind(this));
         this.targetDoorState.on('get', this.getTargetState.bind(this));
         
         this.service = new Service.AccessoryInformation();
@@ -177,8 +179,8 @@ HTTPGarageDoorAccessory.prototype = {
         callback(null, this.targetState);
     },
     
-    setState: function(state, callback) {
-        this.log("setState: " + state + " : " + this.doorStateToString(state));
+    setTargetState: function(state, callback) {
+        this.log("setTargetState: " + state + " : " + this.doorStateToString(state));
         this.activateDoor();
         this.targetState = state;
         this.targetDoorState.updateValue(this.targetState);
