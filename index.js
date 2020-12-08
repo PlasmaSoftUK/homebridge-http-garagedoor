@@ -74,11 +74,14 @@ HTTPGarageDoorAccessory.prototype = {
                     
                     //Check if Door is changing state from external activation if so update target state
                     if(this.targetState == DoorState.OPEN && newState == DoorState.CLOSING) {
+                        this.log('Door Was Open but now Closing');
                         this.targetState == DoorState.CLOSED;
+                        this.targetDoorState.updateValue(this.targetState); 
                     } else if(this.targetState == DoorState.CLOSED && newState == DoorState.OPENING) {
+                        this.log('Door Was Open but now Closing');
                         this.targetState == DoorState.OPEN;
+                        this.targetDoorState.updateValue(this.targetState); 
                     }
-                    this.targetDoorState.updateValue(this.targetState);          
                 }
                 setTimeout(this.monitorDoorState.bind(this), this.statusPollInMs);
                 return state;
