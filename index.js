@@ -14,17 +14,6 @@ module.exports = function(homebridge) {
     homebridge.registerAccessory("homebridge-http-garage-door", "HTTPGarageDoor", HTTPGarageDoorAccessory);
 };
 
-/*
- function getVal(config, key, defaultVal) {
- var val = config[key];
- if (val === null) {
- this.log("WARN: ${key} is a mandatory parameter!");
- return defaultVal;
- }
- return val;
- }
- */
-
 function HTTPGarageDoorAccessory(log, config) {
     
     this.log = log;
@@ -173,6 +162,7 @@ HTTPGarageDoorAccessory.prototype = {
         
         
         this.log("is this Closing: " + DoorState.CLOSING + " - " + this.doorStateToString(DoorState.CLOSING));
+        this.log("is this Opening: " + DoorState.OPENING + " - " + this.doorStateToString(DoorState.OPENING));
         
         //Trigger Monitoring
         this.currentStateString = this.monitorDoorState();
