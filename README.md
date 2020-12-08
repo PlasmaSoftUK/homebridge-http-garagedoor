@@ -2,8 +2,6 @@
 A Homebridge Plugin to control a Garage Door / Gate via HTTP commands
 
 References:
-
-  https://blog.theodo.com/2017/08/make-siri-perfect-home-companion-devices-not-supported-apple-homekit/
   
   https://github.com/senscho/homebridge-tutorial
   
@@ -11,18 +9,16 @@ References:
 
 
 
-A work in progress because I can't find an alternative plugin that will work
-
 I have a rPi Controlling my Gate via a web server which also allows me to integrate to Alexa.
-I would ideally like this integrated in to Homekit too, hence this plugin
+I would ideally like this integrated in to Homekit too, hence this plugin.
 
-The aim is to have the plugin call the web service that Alexa use to control the gate:
+The aim is to have the plugin call the same web service that Alexa uses to control the gate:
 
-http://pigate.local/activate
+http://127.0.0.1:4283/activate
 
-http://pigate.local/status
+http://127.0.0.1:4283/activate
 
-Then push that back in to Homekit.
+Then push that back in to HomeKit, and keep in sync if I use the manual controls or Alexa.
 
 
 
@@ -30,11 +26,15 @@ Then push that back in to Homekit.
 
 sudo npm install -g https://github.com/PlasmaSoftUK/homebridge-http-garagedoor.git
 
+
+Then in your config.json add this accessory:
+
 ```
 {
     "accessory": "HTTPGarageDoor",
     "name": "Front Gate",
-    "statusURL": "http://pigate.local/status",
-    "activateURL": "http://pigate.local/activate"
+    "activateURL": "http://127.0.0.1:4283/activate",
+    "statusURL": "http://127.0.0.1:4283/activate",
+    "statusPollInMs": 4000
 }
 ```
