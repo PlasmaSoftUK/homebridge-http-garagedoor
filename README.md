@@ -9,7 +9,7 @@ References:
 
 
 
-I have a rPi Controlling my Gate via a web server which also allows me to integrate to Alexa.
+I have a rPi Controlling my BFT Deimos Ultra A600 Gate via a web server which also allows me to integrate to Alexa.
 I would ideally like this integrated in to Homekit too, hence this plugin.
 
 The aim is to have the plugin call the same web service that Alexa uses to control the gate:
