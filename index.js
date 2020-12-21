@@ -176,6 +176,8 @@ HTTPGarageDoorAccessory.prototype = {
             this.activateDoor();
             this.targetState = state;
             this.targetDoorState.updateValue(this.targetState);
+        } else {
+            this.log(this.name + " Ignoring request to " + this.doorStateToString(state) + " as already in this state");
         }
         
         callback();
